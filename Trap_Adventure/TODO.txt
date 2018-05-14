@@ -1,0 +1,13 @@
+1)Grafika
+2)Skok
+3)Detekcija prepreka
+
+- Splash screen
+- Promeniti pozadinu na nebo plavu
+- Promeniti boje(cigle, zemljiste)
+- Generisati dugacke mape umesto visokih
+- Zameniti teksture sa novim
+- Dodati fiziku igre
+- Dodati AI za enemy
+- Zivote za Super Maria
+- Dodati prepreke(cevi)
