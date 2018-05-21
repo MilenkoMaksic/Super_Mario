@@ -73,7 +73,7 @@ int udario_glavom_skok = 0;
 int map_move = 0;
 int brojac = 0;
 int udario_u_blok = 0;
-int nivo = 1;
+int nivo = 0;
 int start_fall = 0;
 int jump_cnt = 0;
 
@@ -179,23 +179,148 @@ static void chhar_spawn(characters * chhar) {
 static void map_update(characters * mario) {
 	int x, y;
 	long int addr;
+	int i,j;
 
-	if (mario->x >= 620 && nivo==1) {
-			nivo=2;
-			if (udario_u_blok <= 0) {
-				map_move+=620;
-				//chhar_spawn(mario);
+	if(nivo == 0){
+		map_move = 0;
+		nivo = 1;
+		for(i = 0; i <= 30; i++){
+			for(j = 0; j <= 40; j++){
+				map[i][j] = map1[i][j];
 			}
-			if (mario->x == 2560) {
-				map_move = 2520;
+		}
+	}
+	if(mario -> x <= 0 && nivo == 0){
+		nivo = 0;
+		map_move = 0;
+		mario->x = 10;
+		for(i = 0; i < 30; i++){
+			for(j = 0; j <= 40; j++){
+				map[i][j] = map1[i][j+map_move];
+			}
+		}
+	}
+
+	if(mario->x >= 620 && nivo == 1){
+		nivo = 2;
+		map_move += 40;
+		mario->x = 41;
+		for(i = 0; i < 30; i++){
+			for(j = 0; j <= 40; j++){
+				map[i][j] = map1[i][j+map_move];
+			}
+		}
+	}
+	if(mario -> x <= 0 && nivo == 2){
+		nivo = 0;
+		map_move = 0;
+		mario->x = 620;
+		for(i = 0; i < 30; i++){
+			for(j = 0; j <= 40; j++){
+				map[i][j] = map1[i][j+map_move];
+			}
+		}
+	}
+	if (mario-> x >= 620 && nivo == 2){
+		nivo = 3;
+		map_move = 0;
+		map_move += 80;
+		mario -> x = 10;
+		for(i = 0; i < 30; i++){
+			for(j = 0; j <= 40; j++){
+				map[i][j] = map1[i][j+map_move];
+			}
+		}
+	}
+	if (mario-> x <= 0 && nivo == 3){
+			nivo = 2;
+			map_move = 0;
+			map_move += 40;
+			mario -> x = 620;
+			for(i = 0; i < 30; i++){
+				for(j = 0; j <= 40; j++){
+					map[i][j] = map1[i][j+map_move];
+				}
+			}
+		}
+	if (mario-> x >= 620 && nivo == 3){
+			nivo = 4;
+			map_move = 0;
+			map_move += 120;
+			mario -> x = 10;
+			for(i = 0; i < 30; i++){
+				for(j = 0; j <= 40; j++){
+					map[i][j] = map1[i][j+map_move];
+				}
+			}
+		}
+	if (mario-> x <= 0 && nivo == 4){
+		nivo = 3;
+		map_move = 0;
+		map_move += 80;
+		mario -> x = 620;
+		for(i = 0; i < 30; i++){
+			for(j = 0; j <= 40; j++){
+				map[i][j] = map1[i][j+map_move];
+				}
+			}
+		}
+	/*if(mario->x < 0 && nivo == 0){
+		map_move = 0;
+		nivo = 1;
+		for(i = 0; i <= 30; i++){
+			for(j = 0; j <= 40; j++){
+				map[i][j] = map1[i][j+map_move];
+			}
+		}
+	}
+	if(mario->x < 0 && nivo == 1){
+			nivo = 0;
+			map_move = 0;
+			nivo = 1;
+			for(i = 0; i <= 30; i++){
+				for(j = 0; j <= 40; j++){
+					map[i][j] = map1[i][j+map_move];
+				}
 			}
 		}
 
+
+	if(mario->x >= 620 && nivo == 2){
+			nivo = 3;
+			map_move += 40;
+			mario->x = 41;
+			for(i = 0; i < 30; i++){
+				for(j = 0; j <= 40; j++){
+					map[i][j] = map1[i][j+map_move];
+				}
+			}
+		}
+	if(mario->x >= 620 && nivo == 3){
+			nivo = 4;
+			map_move += 40;
+			mario->x = 41;
+			for(i = 0; i < 30; i++){
+				for(j = 0; j <= 40; j++){
+					map[i][j] = map1[i][j+map_move];
+				}
+			}
+		}*/
+	/*if(mario->x >= 620 && nivo == 2){
+		nivo = 3;
+		map_move += 40;
+		mario->x = 81;
+		for(i = 0; i <= 30; i++){
+			for(j = 0; j <= 40; j++){
+				map[i][j] = map1[i][j+80];
+			}
+		}
+	}*/
 	for (y = 0; y < MAP_HEIGHT; y++) {
 		for (x = 0; x < MAP_WIDTH; x++) {
 			addr = XPAR_BATTLE_CITY_PERIPH_0_BASEADDR
 					+ 4 * (MAP_BASE_ADDRESS + y * MAP_WIDTH + x);
-			switch (map1[y][x + map_move]) {
+			switch (map[y][x]) {
 			case 0:
 				Xil_Out32(addr, IMG_16x16_crno);
 				break;
@@ -243,41 +368,34 @@ void coin_detection(characters* ch, bool have_coin[9]){
 	u8 roundX = ch->x >> 4;
 	u8 roundY = ch->y >> 4;
 
-	if (map1[roundY][roundX] == 5) {/////
+	if (map[roundY][roundX] == 5) {/////
 			have_coin[P_L] = true;
+			map[roundY][roundX] = 0;
 			map1[roundY][roundX] = 0;
 		}
-		if (map1[roundY][roundX+1] == 5) {/////
+		if (map[roundY][roundX+1] == 5) {/////
 			have_coin[P_R] = true;
+			map[roundY][roundX+1] = 0;
 			map1[roundY][roundX+1] = 0;
 		}
-		/*if (map1[roundY][roundX] == 5 || map1[roundY][roundX+1] == 5) {/////
-			have_coin[P_U] = true;
-			map1[roundY][roundX] = 0;
-			map1[roundY][roundX+1] = 0;
-		}*/
-		if (map1[roundY+1][roundX] == 5 || map1[roundY+1][roundX+1] == 5){/////
+		if (map[roundY+1][roundX] == 5 || map[roundY+1][roundX+1] == 5){/////
 			have_coin[P_D] = true;
+			map[roundY+1][roundX] = 0;
+			map[roundY+1][roundX+1] = 0;
 			map1[roundY+1][roundX] = 0;
 			map1[roundY+1][roundX+1] = 0;
 		}
-		/*if (map1[roundY][roundX] == 5 || map1[roundY][roundX+1] == 5) {
-			have_coin[P_UR] = true;
-			map1[roundY][roundX] = 0;
-			map1[roundY][roundX+1] = 0;
-		}
-		if (map1[roundY][roundX] == 5 || map1[roundY][roundX-1] == 5) {
-			have_coin[P_UL] = true;
-			map1[roundY][roundX] = 0;
-			map1[roundY][roundX-1] = 0;
-		}*/
-		if (map1[roundY+1][roundX] == 5 || map1[roundY+1][roundX] == 5) {/////
+		if (map[roundY+1][roundX] == 5 || map[roundY+1][roundX] == 5) {/////
 			have_coin[P_DR] = true;
+			map[roundY][roundX] = 0;
+			map[roundY+1][roundX] = 0;
 			map1[roundY][roundX] = 0;
 			map1[roundY+1][roundX] = 0;
 		}
-		if (map1[roundY+1][roundX] == 5 || map1[roundY+1][roundX+1] == 5) {//////
+		if (map[roundY+1][roundX] == 5 || map[roundY+1][roundX+1] == 5) {//////
 			have_coin[P_DL] = true;
+			map[roundY][roundX] = 0;
+			map[roundY+1][roundX+1] = 0;
 			map1[roundY][roundX] = 0;
 			map1[roundY+1][roundX+1] = 0;
 		}
@@ -293,28 +411,28 @@ void obstacle_detection( characters* ch, bool have_obstacle[9],bool have_coin[9]
 
 	coin_detection(ch,&have_coin);
 
-	if (map1[roundY][roundX] != 0) {/////
+	if (map[roundY][roundX] != 0) {/////
 		have_obstacle[P_L] = true;
 	}
-	if (map1[roundY][roundX+1] != 0) {/////
+	if (map[roundY][roundX+1] != 0) {/////
 		have_obstacle[P_R] = true;
 	}
-	if ((map1[roundY][roundX] != 0 || map1[roundY][roundX+1] != 0) ) {/////
+	if ((map[roundY][roundX] != 0 || map[roundY][roundX+1] != 0) ) {/////
 		have_obstacle[P_U] = true;
 	}
-	if ((map1[roundY+1][roundX] != 0 || map1[roundY+1][roundX+1]) != 0 ){/////
+	if ((map[roundY+1][roundX] != 0 || map[roundY+1][roundX+1]) != 0 ){/////
 		have_obstacle[P_D] = true;
 	}
-	if ((map1[roundY][roundX] != 0 || map1[roundY][roundX+1] != 0) ) {
+	if ((map[roundY][roundX] != 0 || map[roundY][roundX+1] != 0) ) {
 		have_obstacle[P_UR] = true;
 	}
-	if ((map1[roundY][roundX] != 0 || map1[roundY][roundX-1] != 0) ) {
+	if ((map[roundY][roundX] != 0 || map[roundY][roundX-1] != 0) ) {
 		have_obstacle[P_UL] = true;
 	}
-	if ((map1[roundY+1][roundX] != 0 || map1[roundY+1][roundX-1] != 0)) {/////
+	if ((map[roundY+1][roundX] != 0 || map[roundY+1][roundX-1] != 0)) {/////
 		have_obstacle[P_DR] = true;
 	}
-	if ((map1[roundY+1][roundX] != 0 || map1[roundY+1][roundX+1] != 0)) {//////
+	if ((map[roundY+1][roundX] != 0 || map[roundY+1][roundX+1] != 0)) {//////
 		have_obstacle[P_DL] = true;
 	}
 
