@@ -1,14 +1,15 @@
 ﻿  tools.cpp
-c:\users\student\desktop\bc_mem_packer\battle_mem\tools.cpp(15): warning C4018: '<': signed/unsigned mismatch
-c:\users\student\desktop\bc_mem_packer\battle_mem\tools.cpp(21): warning C4018: '<': signed/unsigned mismatch
-c:\users\student\desktop\bc_mem_packer\battle_mem\tools.cpp(43): warning C4018: '<': signed/unsigned mismatch
-c:\users\student\desktop\bc_mem_packer\battle_mem\tools.cpp(35): warning C4101: 'mask': unreferenced local variable
-c:\users\student\desktop\bc_mem_packer\battle_mem\tools.cpp(36): warning C4101: 'bit': unreferenced local variable
-c:\users\student\desktop\bc_mem_packer\battle_mem\tools.cpp(154): warning C4101: 'y': unreferenced local variable
-c:\users\student\desktop\bc_mem_packer\battle_mem\tools.cpp(206): warning C4474: 'fprintf' : too many arguments passed for format string
-  c:\users\student\desktop\bc_mem_packer\battle_mem\tools.cpp(206): note: placeholders and their parameters expect 0 variadic arguments, but 1 were provided
+c:\users\student\desktop\super_mario_stari\super_mario\supermario\bc_mem_packer\battle_mem\tools.cpp(15): warning C4018: '<': signed/unsigned mismatch
+c:\users\student\desktop\super_mario_stari\super_mario\supermario\bc_mem_packer\battle_mem\tools.cpp(21): warning C4018: '<': signed/unsigned mismatch
+c:\users\student\desktop\super_mario_stari\super_mario\supermario\bc_mem_packer\battle_mem\tools.cpp(43): warning C4018: '<': signed/unsigned mismatch
+c:\users\student\desktop\super_mario_stari\super_mario\supermario\bc_mem_packer\battle_mem\tools.cpp(35): warning C4101: 'mask': unreferenced local variable
+c:\users\student\desktop\super_mario_stari\super_mario\supermario\bc_mem_packer\battle_mem\tools.cpp(36): warning C4101: 'bit': unreferenced local variable
+c:\users\student\desktop\super_mario_stari\super_mario\supermario\bc_mem_packer\battle_mem\tools.cpp(154): warning C4101: 'y': unreferenced local variable
+c:\users\student\desktop\super_mario_stari\super_mario\supermario\bc_mem_packer\battle_mem\tools.cpp(206): warning C4474: 'fprintf' : too many arguments passed for format string
+  c:\users\student\desktop\super_mario_stari\super_mario\supermario\bc_mem_packer\battle_mem\tools.cpp(206): note: placeholders and their parameters expect 0 variadic arguments, but 1 were provided
   main.cpp
   bitmap.cpp
   Generating Code...
-  battle_mem.vcxproj -> C:\Users\student\Desktop\bc_mem_packer\battle_mem\Debug\battle_mem.exe
-  battle_mem.vcxproj -> C:\Users\student\Desktop\bc_mem_packer\battle_mem\Debug\battle_mem.pdb (Full PDB)
+  LINK : C:\Users\student\Desktop\SUPER_MARIO_STARI\Super_Mario\SuperMario\bc_mem_packer\battle_mem\Debug\battle_mem.exe not found or not built by the last incremental link; performing full link
+  battle_mem.vcxproj -> C:\Users\student\Desktop\SUPER_MARIO_STARI\Super_Mario\SuperMario\bc_mem_packer\battle_mem\Debug\battle_mem.exe
+  battle_mem.vcxproj -> C:\Users\student\Desktop\SUPER_MARIO_STARI\Super_Mario\SuperMario\bc_mem_packer\battle_mem\Debug\battle_mem.pdb (Full PDB)

@@ -22,15 +22,36 @@
  */
 
 // ***** 16x16 IMAGES *****
-#define IMG_16x16_cigle			0x00FF //2
-#define IMG_16x16_coin			0x013F //5
-#define IMG_16x16_crno			0x017F //0
-#define IMG_16x16_enemi1		0x01BF //4
-#define IMG_16x16_mario			0x01FF //1
-#define IMG_16x16_plavacigla	0x023F //3
+#define IMG_16x16_0			0x00FF
+#define IMG_16x16_1			0x013F
+#define IMG_16x16_2			0x017F
+#define IMG_16x16_3			0x01BF
+#define IMG_16x16_4			0x01FF
+#define IMG_16x16_5			0x023F
+#define IMG_16x16_6			0x027F
+#define IMG_16x16_7			0x02BF
+#define IMG_16x16_8			0x02FF
+#define IMG_16x16_9			0x033F
+#define IMG_16x16_A			0x037F
+#define IMG_16x16_Black			0x03BF
+#define IMG_16x16_cigle			0x03FF
+#define IMG_16x16_coin			0x043F
+#define IMG_16x16_crno			0x047F
+#define IMG_16x16_D			0x04BF
+#define IMG_16x16_E			0x04FF
+#define IMG_16x16_enemi1			0x053F
+#define IMG_16x16_I			0x057F
+#define IMG_16x16_L			0x05BF
+#define IMG_16x16_M			0x05FF
+#define IMG_16x16_mario			0x063F
+#define IMG_16x16_O			0x067F
+#define IMG_16x16_plavacigla			0x06BF
+#define IMG_16x16_R			0x06FF
+#define IMG_16x16_W			0x073F
+#define IMG_16x16_White			0x077F
 // ***** MAP *****
 
-#define MAP_BASE_ADDRESS			639 // MAP_OFFSET in battle_city.vhd
+#define MAP_BASE_ADDRESS			1983 // MAP_OFFSET in battle_city.vhd
 #define MAP_X							0
 #define MAP_X2							640
 #define MAP_Y							4
@@ -71,7 +92,7 @@ int score = 0;
 int mapPart = 1;
 int udario_glavom_skok = 0;
 int map_move = 0;
-int brojac = 0;
+int coins = 0;
 int udario_u_blok = 0;
 int nivo = 0;
 int start_fall = 0;
@@ -176,6 +197,15 @@ static void chhar_spawn(characters * chhar) {
 			(chhar->y << 16) | chhar->x);
 }
 
+void hard_reset(characters *ch){
+	mapPart = 1;
+	map_move = 0;
+	coins = 0;
+	nivo = 0;
+	start_fall = 0;
+	jump_cnt = 0;
+	ch->x = 20;
+}
 static void map_update(characters * mario) {
 	int x, y;
 	long int addr;
@@ -265,57 +295,15 @@ static void map_update(characters * mario) {
 				}
 			}
 		}
-	/*if(mario->x < 0 && nivo == 0){
-		map_move = 0;
-		nivo = 1;
-		for(i = 0; i <= 30; i++){
-			for(j = 0; j <= 40; j++){
-				map[i][j] = map1[i][j+map_move];
-			}
-		}
-	}
-	if(mario->x < 0 && nivo == 1){
-			nivo = 0;
-			map_move = 0;
-			nivo = 1;
-			for(i = 0; i <= 30; i++){
-				for(j = 0; j <= 40; j++){
-					map[i][j] = map1[i][j+map_move];
+	if (mario-> x >= 620 && nivo == 4){
+				nivo = 5;
+				mario -> x = 10;
+				for(i = 0; i < 30; i++){
+					for(j = 0; j <= 40; j++){
+						map[i][j] = win_screen[i][j];
+					}
 				}
 			}
-		}
-
-
-	if(mario->x >= 620 && nivo == 2){
-			nivo = 3;
-			map_move += 40;
-			mario->x = 41;
-			for(i = 0; i < 30; i++){
-				for(j = 0; j <= 40; j++){
-					map[i][j] = map1[i][j+map_move];
-				}
-			}
-		}
-	if(mario->x >= 620 && nivo == 3){
-			nivo = 4;
-			map_move += 40;
-			mario->x = 41;
-			for(i = 0; i < 30; i++){
-				for(j = 0; j <= 40; j++){
-					map[i][j] = map1[i][j+map_move];
-				}
-			}
-		}*/
-	/*if(mario->x >= 620 && nivo == 2){
-		nivo = 3;
-		map_move += 40;
-		mario->x = 81;
-		for(i = 0; i <= 30; i++){
-			for(j = 0; j <= 40; j++){
-				map[i][j] = map1[i][j+80];
-			}
-		}
-	}*/
 	for (y = 0; y < MAP_HEIGHT; y++) {
 		for (x = 0; x < MAP_WIDTH; x++) {
 			addr = XPAR_BATTLE_CITY_PERIPH_0_BASEADDR
@@ -339,6 +327,71 @@ static void map_update(characters * mario) {
 			case 5:
 				Xil_Out32(addr, IMG_16x16_coin);
 				break;
+			case 'm':
+				Xil_Out32(addr, IMG_16x16_M);
+				break;
+			case 'a':
+				Xil_Out32(addr, IMG_16x16_A);
+				break;
+			case 'r':
+				Xil_Out32(addr, IMG_16x16_R);
+				break;
+			case 'i':
+				Xil_Out32(addr, IMG_16x16_I);
+				break;
+			case 'o':
+				Xil_Out32(addr, IMG_16x16_O);
+				break;
+			case 'j':
+				if(coins == 0){
+					Xil_Out32(addr, IMG_16x16_0);
+				}
+				else if(coins == 1){
+					Xil_Out32(addr, IMG_16x16_1);
+				}
+				else if(coins == 2){
+					Xil_Out32(addr, IMG_16x16_2);
+				}
+				else if(coins == 3){
+					Xil_Out32(addr, IMG_16x16_3);
+				}
+				else if(coins == 4){
+					Xil_Out32(addr, IMG_16x16_4);
+				}
+				else if(coins == 5){
+					Xil_Out32(addr, IMG_16x16_5);
+				}
+				else if(coins == 6){
+					Xil_Out32(addr, IMG_16x16_6);
+				}
+				else if(coins == 7){
+					Xil_Out32(addr, IMG_16x16_7);
+				}
+				else if(coins == 8){
+					Xil_Out32(addr, IMG_16x16_8);
+				}
+				else if(coins == 9){
+					Xil_Out32(addr, IMG_16x16_9);
+				}
+				else{
+					Xil_Out32(addr, IMG_16x16_0);
+				}
+				break;
+			case 'd':
+				if(coins < 10){
+					Xil_Out32(addr, IMG_16x16_0);
+				}
+				else{
+					Xil_Out32(addr, IMG_16x16_1);
+					coins = 0;
+				}
+				break;
+			case 'b':
+				Xil_Out32(addr, IMG_16x16_Black);
+				break;
+			case 'w':
+				Xil_Out32(addr, IMG_16x16_White);
+				break;
 			default:
 				Xil_Out32(addr, IMG_16x16_crno);
 				break;
@@ -359,6 +412,29 @@ static void map_reset(unsigned char * map) {
 
 }
 
+void enemy_detection(characters* ch){
+	u8 roundX = ch->x >> 4;
+	u8 roundY = ch->y >> 4;
+
+	if (map[roundY][roundX] == 4 || map[roundY+1][roundX] == 4 || map[roundY+1][roundX+1] == 4|| map[roundY+1][roundX-1] == 4 || map[roundY][roundX+1] == 4 || map[roundY][roundX-1] == 4) {
+	//centar, iznad, iznad levo, iznad desno, levo, desno = smrt
+		lives--;
+		if(lives == -1){
+			//	TODO: GAME OVER SCREEN JUMP WHEN LIVES DROP BELOW 0
+		}
+		hard_reset(ch);
+		map_reset(map1);
+		map_update(ch);
+		chhar_spawn(ch);
+	}
+	if (map[roundY-1][roundX] == 4) {	//Ako je neprijatelj ispod nas, ubijamo ga
+		score += 100;
+		map[roundY+1][roundX] = 0;
+		map[roundY+1][roundX+1] = 0;
+		map1[roundY+1][roundX] = 0;
+		map1[roundY+1][roundX+1] = 0;
+	}
+}
 
 void coin_detection(characters* ch, bool have_coin[9]){
 	for(int i = 0; i < 9; i++){
@@ -371,33 +447,38 @@ void coin_detection(characters* ch, bool have_coin[9]){
 	if (map[roundY][roundX] == 5) {/////
 			have_coin[P_L] = true;
 			map[roundY][roundX] = 0;
-			map1[roundY][roundX] = 0;
+			map1[roundY][roundX+map_move] = 0;
+			coins++;
 		}
 		if (map[roundY][roundX+1] == 5) {/////
 			have_coin[P_R] = true;
 			map[roundY][roundX+1] = 0;
-			map1[roundY][roundX+1] = 0;
+			map1[roundY][roundX+1+map_move] = 0;
+			coins++;
 		}
 		if (map[roundY+1][roundX] == 5 || map[roundY+1][roundX+1] == 5){/////
 			have_coin[P_D] = true;
 			map[roundY+1][roundX] = 0;
 			map[roundY+1][roundX+1] = 0;
-			map1[roundY+1][roundX] = 0;
-			map1[roundY+1][roundX+1] = 0;
+			map1[roundY+1][roundX+map_move] = 0;
+			map1[roundY+1][roundX+1+map_move] = 0;
+			coins++;
 		}
 		if (map[roundY+1][roundX] == 5 || map[roundY+1][roundX] == 5) {/////
 			have_coin[P_DR] = true;
 			map[roundY][roundX] = 0;
 			map[roundY+1][roundX] = 0;
-			map1[roundY][roundX] = 0;
-			map1[roundY+1][roundX] = 0;
+			map1[roundY][roundX+map_move] = 0;
+			map1[roundY+1][roundX+map_move] = 0;
+			coins++;
 		}
 		if (map[roundY+1][roundX] == 5 || map[roundY+1][roundX+1] == 5) {//////
 			have_coin[P_DL] = true;
 			map[roundY][roundX] = 0;
 			map[roundY+1][roundX+1] = 0;
-			map1[roundY][roundX] = 0;
-			map1[roundY+1][roundX+1] = 0;
+			map1[roundY][roundX+map_move] = 0;
+			map1[roundY+1][roundX+1+map_move] = 0;
+			coins++;
 		}
 }
 
@@ -409,6 +490,7 @@ void obstacle_detection( characters* ch, bool have_obstacle[9],bool have_coin[9]
 	u8 roundX = ch->x >> 4;
 	u8 roundY = ch->y >> 4;
 
+	enemy_detection(ch);
 	coin_detection(ch,&have_coin);
 
 	if (map[roundY][roundX] != 0) {/////
@@ -437,101 +519,9 @@ void obstacle_detection( characters* ch, bool have_obstacle[9],bool have_coin[9]
 	}
 
 
-	/*if (map1[roundY][roundX] == 5) {/////
-			map1[roundY][roundX] == 0;
-			map_reset(map1);
-			map_update(&mario);
-		}
-	if (map1[roundY][roundX+1] == 5) {/////
-			map1[roundY][roundX+1] == 0;
-			map_reset(map1);
-			map_update(&mario);
-		}*/
-	/*if (map1[roundY][roundX] == 5 || map1[roundY][roundX+1] == 5) {/////
 
-		}
-		if ((map1[roundY+1][roundX] != 0 || map1[roundY+1][roundX+1]) != 0 && (map1[roundY+1][roundX] != 5 || map1[roundY+1][roundX+1] != 5)){/////
-			have_obstacle[P_D] = true;
-		}
-		if ((map1[roundY][roundX] != 0 || map1[roundY][roundX+1] != 0) && (map1[roundY][roundX] != 5 || map1[roundY][roundX+1] != 5)) {
-			have_obstacle[P_UR] = true;
-		}
-		if ((map1[roundY][roundX] != 0 || map1[roundY][roundX-1] != 0) && (map1[roundY][roundX] != 5 || map1[roundY][roundX-1] != 5)) {
-			have_obstacle[P_UL] = true;
-		}
-		if ((map1[roundY+1][roundX] != 0 || map1[roundY+1][roundX-1] != 0) && (map1[roundY+1][roundX] != 5 || map1[roundY+1][roundX] != 5)) {/////
-			have_obstacle[P_DR] = true;
-		}
-		if ((map1[roundY+1][roundX] != 0 || map1[roundY+1][roundX+1] != 0) && (map1[roundY+1][roundX] != 5 || map1[roundY+1][roundX+1] != 5)) {//////
-			have_obstacle[P_DL] = true;
-		}*/
-	//if(jump_cnt>0){
-	//	if (map1[roundY][roundX+1] != 0){
-	//		have_obstacle[P_UR] = true;
-	//	}
-	//	if (map1[roundY][roundX-1] != 0){
-	//		have_obstacle[P_UL] = true;
-	//	}
-	//}
 
 }
-/*
-void obstacle_detection( characters* ch, bool have_obstacle[9], u8 jump_cnt, direction_t dir ) {
-	for(int i=0;i<9;i++){
-		have_obstacle[i]=false;
-	}
-
-	u8 roundX = ch->x >> 4;
-	u8 roundY = ch->y >> 4;
-
-	if (map1[roundY][roundX] != 0 && dir == DIR_LEFT) {/////
-		have_obstacle[P_L] = true;
-		ch->x= ((ch->x)+1);
-	}
-	if (map1[roundY][roundX] != 0 && dir == DIR_RIGHT) {/////
-		have_obstacle[P_R] = true;
-		ch->x= ((ch->x)-1);
-	}
-	if (map1[roundY][roundX] != 0 && dir == DIR_UP) {/////
-		have_obstacle[P_U] = true;
-		ch->y= ((ch->y)+1);
-	}
-	if (map1[roundY][roundX] != 0 && dir == DIR_DOWN) {/////
-		have_obstacle[P_D] = true;
-		ch->y= ((ch->y)-1);
-	}
-	if (map1[roundY][roundX] != 0 && dir == DIR_UR) {
-		have_obstacle[P_UR] = true;
-		ch->x= ((ch->x)-1);
-		ch->y= ((ch->y)+1);
-	}
-	if (map1[roundY][roundX] != 0 && dir == DIR_UL) {
-		have_obstacle[P_UL] = true;
-		ch->x= ((ch->x)+1);
-		ch->y= ((ch->y)+1);
-	}
-	if (map1[roundY][roundX] != 0 && dir == DIR_DR) {/////
-		have_obstacle[P_DR] = true;
-		ch->x= ((ch->x)-1);
-		ch->y= ((ch->y)-1);
-	}
-	if (map1[roundY][roundX] != 0 && dir == DIR_DL) {//////
-		have_obstacle[P_DL] = true;
-		ch->x= ((ch->x)+1);
-		ch->y= ((ch->y)-1);
-	}
-
-	//if(jump_cnt>0){
-	//	if (map1[roundY][roundX+1] != 0){
-	//		have_obstacle[P_UR] = true;
-	//	}
-	//	if (map1[roundY][roundX-1] != 0){
-	//		have_obstacle[P_UL] = true;
-	//	}
-	//}
-
-}*/
-
 
 static bool_t character_move(characters* ch, direction_t dir, bool up_pressed) {
 
@@ -650,15 +640,14 @@ void battle_city() {
 	unsigned int buttons; /*, tmpBtn = 0, tmpUp = 0;*/
 	int i;/*, change = 0, jumpFlag = 0;*/
 	/*int block;*/
-
 	map_reset(map1);
 	map_update(&mario);
-
+	chhar_spawn(&mario);
 	//chhar_spawn(&enemie1);
 	//chhar_spawn(&enemie2);
 	//chhar_spawn(&enemie3);
 	//chhar_spawn(&enemie4);
-	chhar_spawn(&mario);
+
 
 	while (1) {
 

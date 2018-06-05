@@ -129,7 +129,7 @@ void process_images( const char * dir, FILE * mem_file, FILE * def_file, unsigne
                 continue;
             }
 
-            sprintf( def_name, ( type == IMG_16x16 ) ? "IMG_16x18_%s" : "IMG_8x8_%s", find_data.cFileName );
+            sprintf( def_name, ( type == IMG_16x16 ) ? "IMG_16x16_%s" : "IMG_8x8_%s", find_data.cFileName );
 
             // Remove .bmp extension
             def_name[ strlen( def_name ) - 4 ] = '\0';
@@ -139,7 +139,7 @@ void process_images( const char * dir, FILE * mem_file, FILE * def_file, unsigne
             image_to_mem( mem_file, *base_addr, img, type, def_name );
 
             // Each image row gets split into 4 byte parts in order to fit memory size.
-            *base_addr += ( type == IMG_16x16 ) ? 8 * 2 : 16 * 4;
+            *base_addr += ( type == IMG_16x16 ) ? 16 * 4 : 8 * 2;
 
             free( img );
         }
