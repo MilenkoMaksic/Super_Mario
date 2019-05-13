@@ -11,3 +11,9 @@
 - Dodati AI za enemy
 - Zivote za Super Maria
 - Dodati prepreke(cevi)
+
+
+- POPRAVITI SVE BAGOVE
+lose skrin da radi na reset
+popraviti jedenje cigala
+i propadanje kroz iste

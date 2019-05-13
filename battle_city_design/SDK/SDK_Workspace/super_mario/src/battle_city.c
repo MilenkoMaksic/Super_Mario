@@ -130,10 +130,11 @@ typedef struct {
 	unsigned int reg_h;
 } characters;
 
-characters mario = { 40,	                        // x
-		369,		                     // y
+characters mario = {
+		40,	                        	// x
+		369,		                    // y
 		DIR_RIGHT,              		// dir
-		IMG_16x16_mario,  			// type
+		IMG_16x16_mario,  				// type
 
 		b_false,                		// destroyed
 
@@ -141,10 +142,11 @@ characters mario = { 40,	                        // x
 		TANK1_REG_H             		// reg_h
 		};
 
-characters enemie1 = { 331,						// x
-		431,						// y
-		DIR_LEFT,              		// dir
-		IMG_16x16_enemi1,  		// type
+characters enemie1 = {
+		331,							// x
+		431,							// y
+		DIR_LEFT,              			// dir
+		IMG_16x16_enemi1,  				// type
 
 		b_false,                		// destroyed
 
@@ -152,10 +154,11 @@ characters enemie1 = { 331,						// x
 		TANK_AI_REG_H             		// reg_h
 		};
 
-characters enemie2 = { 450,						// x
-		431,						// y
-		DIR_LEFT,              		// dir
-		IMG_16x16_enemi1,  		// type
+characters enemie2 = {
+		450,							// x
+		431,							// y
+		DIR_LEFT,              			// dir
+		IMG_16x16_enemi1,  				// type
 
 		b_false,                		// destroyed
 
@@ -163,10 +166,11 @@ characters enemie2 = { 450,						// x
 		TANK_AI_REG_H2             		// reg_h
 		};
 
-characters enemie3 = { 330,						// x
-		272,						// y
-		DIR_LEFT,              		// dir
-		IMG_16x16_enemi1,  		// type
+characters enemie3 = {
+		330,							// x
+		272,							// y
+		DIR_LEFT,              			// dir
+		IMG_16x16_enemi1,  				// type
 
 		b_false,                		// destroyed
 
@@ -174,10 +178,11 @@ characters enemie3 = { 330,						// x
 		TANK_AI_REG_H3             		// reg_h
 		};
 
-characters enemie4 = { 635,						// x
-		431,						// y
-		DIR_LEFT,              		// dir
-		IMG_16x16_enemi1,  		// type
+characters enemie4 = {
+		635,							// x
+		431,							// y
+		DIR_LEFT,              			// dir
+		IMG_16x16_enemi1,  				// type
 
 		b_false,                		// destroyed
 
@@ -247,10 +252,10 @@ static void map_update(characters * mario) {
 
 
 
-	if(mario -> x <= 0 && nivo == 0){
+	if(mario -> x <= 0 && nivo == 1){
 		nivo = 0;
 		map_move = 0;
-		mario->x = 10;
+		mario->x = 1;
 		for(i = 0; i < 30; i++){
 			for(j = 0; j <= 40; j++){
 				map[i][j] = map1[i][j+map_move];
@@ -506,7 +511,7 @@ void enemy_detection(characters* ch){
 	u8 roundX = ch->x >> 4;
 	u8 roundY = ch->y >> 4;
 
-	if (map[roundY-1][roundX] == 4) {	//Ako je neprijatelj ispod nas, ubijamo ga
+	if (map[roundY-1][roundX] == 4) {	//Ako je neprijatelj ispod nas, ubijamo ga aaaaali ne
 			score += 100;
 			map[roundY+1][roundX] = 0;
 			map[roundY+1][roundX+1] = 0;

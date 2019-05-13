@@ -1,2 +1,8 @@
-﻿  battle_mem.vcxproj -> C:\Users\student\Desktop\MARIO_FINAL\sup_m\Super_Mario\SuperMario\bc_mem_packer\battle_mem\Debug\battle_mem.exe
-  battle_mem.vcxproj -> C:\Users\student\Desktop\MARIO_FINAL\sup_m\Super_Mario\SuperMario\bc_mem_packer\battle_mem\Debug\battle_mem.pdb (Full PDB)
+﻿Build started 13.5.2019 10:56:33.
+     1>Project "D:\ra11-2016\Super_Mario\bc_mem_packer\battle_mem\battle_mem.vcxproj" on node 2 (build target(s)).
+     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\Platforms\Win32\Microsoft.Cpp.Win32.Targets(518,5): error MSB8008: Specified platform toolset (v140) is not installed or invalid. Please make sure that a supported PlatformToolset value is selected.
+     1>Done Building Project "D:\ra11-2016\Super_Mario\bc_mem_packer\battle_mem\battle_mem.vcxproj" (build target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:00.00
