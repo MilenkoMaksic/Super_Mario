@@ -219,6 +219,12 @@ void hard_reset(characters *ch){
 	start_fall = 0;
 	jump_cnt = 0;
 	ch->x = 20;
+
+	/*for(int i = 0; i < 30; i++){ vratiti pocetnu mapu na hard reset
+		for(int j = 0; j <= 40; j++){
+			map[i][j] = map_static[i][j];
+		}
+	}*/
 }
 static void map_update(characters * mario) {
 	int x, y;
@@ -233,9 +239,6 @@ static void map_update(characters * mario) {
 				}
 			}
 		}
-
-
-
 
 	if(nivo == 0){
 		map_move = 0;
@@ -333,6 +336,7 @@ static void map_update(characters * mario) {
 	if (mario-> x >= 620 && nivo == 4){
 				nivo = 5;
 				mario -> x = 10;
+				lives = 3;
 				for(i = 0; i < 30; i++){
 					for(j = 0; j <= 40; j++){
 						map[i][j] = map_win[i][j];
@@ -511,12 +515,12 @@ void enemy_detection(characters* ch){
 	u8 roundX = ch->x >> 4;
 	u8 roundY = ch->y >> 4;
 
-	if (map[roundY-1][roundX] == 4) {	//Ako je neprijatelj ispod nas, ubijamo ga aaaaali ne
-			score += 100;
+	if (map[roundY+1][roundX] == 4 || map[roundY+1][roundX+1] == 4 || map[roundY+1][roundX-1] == 4 ) {	//Ako je neprijatelj ispod nas, ubijamo ga aaaaali ne
+			score += 10;
 			map[roundY+1][roundX] = 0;
 			map[roundY+1][roundX+1] = 0;
-			map1[roundY+1][roundX] = 0;
-			map1[roundY+1][roundX+1] = 0;
+			map1[roundY+1][roundX+map_move] = 0;
+			map1[roundY+1][roundX+map_move] = 0;
 		}
 
 	if (map[roundY][roundX] == 4 || map[roundY+1][roundX] == 4 || map[roundY+1][roundX+1] == 4|| map[roundY+1][roundX-1] == 4 || map[roundY][roundX+1] == 4 || map[roundY][roundX-1] == 4) {
@@ -538,7 +542,7 @@ void coin_detection(characters* ch, bool have_coin[9]){
 	u8 roundX = ch->x >> 4;
 	u8 roundY = ch->y >> 4;
 
-	if (map[roundY][roundX] == 5) {/////
+		if (map[roundY][roundX] == 5) {/////
 			have_coin[P_L] = true;
 			map[roundY][roundX] = 0;
 			map1[roundY][roundX+map_move] = 0;
@@ -558,7 +562,7 @@ void coin_detection(characters* ch, bool have_coin[9]){
 			map1[roundY+1][roundX+1+map_move] = 0;
 			coins++;
 		}
-		if (map[roundY+1][roundX] == 5 || map[roundY+1][roundX] == 5) {/////
+		if (map[roundY+1][roundX] == 5 || map[roundY+1][roundX+1] == 5) {/////
 			have_coin[P_DR] = true;
 			map[roundY][roundX] = 0;
 			map[roundY+1][roundX] = 0;
@@ -751,6 +755,12 @@ void battle_city() {
 	unsigned int buttons; /*, tmpBtn = 0, tmpUp = 0;*/
 	int i;/*, change = 0, jumpFlag = 0;*/
 	/*int block;*/
+	/*for(int i = 0; i < 30; i++){  napraviti pocetnu mapu
+		for(int j = 0; j <= 160; j++){
+			map_static[i][j] = map1[i][j];
+		}
+	}*/
+
 	map_reset(map1);
 	map_update(&mario);
 
@@ -761,6 +771,8 @@ void battle_city() {
 	//chhar_spawn(&enemie2);
 	//chhar_spawn(&enemie3);
 	//chhar_spawn(&enemie4);
+	if(lives == 0)
+		lives = 3;
 
 
 	while (1) {

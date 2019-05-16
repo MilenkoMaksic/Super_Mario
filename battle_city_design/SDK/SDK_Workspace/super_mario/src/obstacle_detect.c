@@ -5,6 +5,7 @@
  *      Author: student
  */
 #include "obstacle_detect.h"
+#include "math.h"
 
 #include "map.h"
 
