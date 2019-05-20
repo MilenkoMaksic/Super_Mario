@@ -220,6 +220,7 @@ void hard_reset(characters *ch){
 	jump_cnt = 0;
 	ch->x = 20;
 
+
 	/*for(int i = 0; i < 30; i++){ vratiti pocetnu mapu na hard reset
 		for(int j = 0; j <= 40; j++){
 			map[i][j] = map_static[i][j];
@@ -515,7 +516,7 @@ void enemy_detection(characters* ch){
 	u8 roundX = ch->x >> 4;
 	u8 roundY = ch->y >> 4;
 
-	if (map[roundY+1][roundX] == 4 || map[roundY+1][roundX+1] == 4 || map[roundY+1][roundX-1] == 4 ) {	//Ako je neprijatelj ispod nas, ubijamo ga aaaaali ne
+	if (map[roundY+1][roundX] == 4 || map[roundY+1][roundX+1] == 4 || map[roundY+1][roundX-1] == 4  ) {	//Ako je neprijatelj ispod nas, ubijamo ga
 			score += 10;
 			map[roundY+1][roundX] = 0;
 			map[roundY+1][roundX+1] = 0;
@@ -523,7 +524,7 @@ void enemy_detection(characters* ch){
 			map1[roundY+1][roundX+map_move] = 0;
 		}
 
-	if (map[roundY][roundX] == 4 || map[roundY+1][roundX] == 4 || map[roundY+1][roundX+1] == 4|| map[roundY+1][roundX-1] == 4 || map[roundY][roundX+1] == 4 || map[roundY][roundX-1] == 4) {
+	if (map[roundY][roundX] == 4 ||  map[roundY][roundX+1] == 4 || map[roundY][roundX-1] == 4) {
 	//centar, iznad, iznad levo, iznad desno, levo, desno = smrt
 		lives--;
 		hard_reset(ch);
@@ -602,22 +603,22 @@ void obstacle_detection( characters* ch, bool have_obstacle[9],bool have_coin[9]
 	if (map[roundY][roundX+1] != 0) {/////
 		have_obstacle[P_R] = true;
 	}
-	if ((map[roundY][roundX] != 0 || map[roundY][roundX+1] != 0) ) {/////
+	if (map[roundY][roundX] != 0 || map[roundY][roundX+1] != 0){/////
 		have_obstacle[P_U] = true;
 	}
-	if ((map[roundY+1][roundX] != 0 || map[roundY+1][roundX+1]) != 0 ){/////
+	if (map[roundY+1][roundX] != 0 || map[roundY+1][roundX+1] != 0){/////
 		have_obstacle[P_D] = true;
 	}
-	if ((map[roundY][roundX] != 0 || map[roundY][roundX+1] != 0) ) {
+	if (map[roundY][roundX] != 0 || map[roundY][roundX+1] != 0) {
 		have_obstacle[P_UR] = true;
 	}
-	if ((map[roundY][roundX] != 0 || map[roundY][roundX-1] != 0) ) {
+	if (map[roundY][roundX] != 0 || map[roundY][roundX-1] != 0){
 		have_obstacle[P_UL] = true;
 	}
-	if ((map[roundY+1][roundX] != 0 || map[roundY+1][roundX-1] != 0)) {/////
+	if (map[roundY+1][roundX] != 0 || map[roundY+1][roundX-1] != 0) {/////
 		have_obstacle[P_DR] = true;
 	}
-	if ((map[roundY+1][roundX] != 0 || map[roundY+1][roundX+1] != 0)) {//////
+	if (map[roundY+1][roundX] != 0 || map[roundY+1][roundX+1] != 0) {//////
 		have_obstacle[P_DL] = true;
 	}
 
@@ -773,6 +774,7 @@ void battle_city() {
 	//chhar_spawn(&enemie4);
 	if(lives == 0)
 		lives = 3;
+
 
 
 	while (1) {
