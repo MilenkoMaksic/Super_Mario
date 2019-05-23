@@ -143,8 +143,9 @@ characters mario = {
 		};
 
 characters enemie1 = {
-		331,							// x
-		431,							// y
+		330,						// x
+		431,                        // y
+
 		DIR_LEFT,              			// dir
 		IMG_16x16_enemi1,  				// type
 
@@ -210,6 +211,8 @@ static void chhar_spawn(characters * chhar) {
 			XPAR_BATTLE_CITY_PERIPH_0_BASEADDR + 4 * ( REGS_BASE_ADDRESS + chhar->reg_h ),
 			(chhar->y << 16) | chhar->x);
 }
+
+
 
 void hard_reset(characters *ch){
 	mapPart = 1;
@@ -516,12 +519,32 @@ void enemy_detection(characters* ch){
 	u8 roundX = ch->x >> 4;
 	u8 roundY = ch->y >> 4;
 
-	if (map[roundY+1][roundX] == 4 || map[roundY+1][roundX+1] == 4 || map[roundY+1][roundX-1] == 4  ) {	//Ako je neprijatelj ispod nas, ubijamo ga
+	/*if (map[roundY+1][roundX] == 4 || map[roundY+1][roundX+1] == 4 || map[roundY+1][roundX-1] == 4  ) {	//Ako je neprijatelj ispod nas, ubijamo ga
 			score += 10;
 			map[roundY+1][roundX] = 0;
 			map[roundY+1][roundX+1] = 0;
 			map1[roundY+1][roundX+map_move] = 0;
 			map1[roundY+1][roundX+map_move] = 0;
+		}*/
+	if (map[roundY+1][roundX] == 4)
+	{
+		score += 10;
+		map[roundY+1][roundX] = 0;
+		map1[roundY+1][roundX+map_move] = 0;
+	}
+
+	if (map[roundY+1][roundX+1] == 4)
+		{
+			score += 10;
+			map[roundY+1][roundX+1] = 0;
+			map1[roundY+1][roundX+1+map_move] = 0;
+		}
+
+	if (map[roundY+1][roundX-1] == 4)
+		{
+			score += 10;
+			map[roundY+1][roundX-1] = 0;
+			map1[roundY+1][roundX-1+map_move] = 0;
 		}
 
 	if (map[roundY][roundX] == 4 ||  map[roundY][roundX+1] == 4 || map[roundY][roundX-1] == 4) {
@@ -555,7 +578,25 @@ void coin_detection(characters* ch, bool have_coin[9]){
 			map1[roundY][roundX+1+map_move] = 0;
 			coins++;
 		}
-		if (map[roundY+1][roundX] == 5 || map[roundY+1][roundX+1] == 5){/////
+
+		if (map[roundY+1][roundX] == 5)
+				{
+					//have_coin[P_R] = true;
+					map[roundY+1][roundX] = 0;
+					map1[roundY+1][roundX+map_move] = 0;
+					coins++;
+				}
+
+		if (map[roundY+1][roundX+1] == 5)
+						{
+							//have_coin[P_R] = true;
+							map[roundY+1][roundX+1] = 0;
+							map1[roundY+1][roundX+1+map_move] = 0;
+							coins++;
+						}
+
+
+		/*if (map[roundY+1][roundX] == 5 || map[roundY+1][roundX+1] == 5){/////
 			have_coin[P_D] = true;
 			map[roundY+1][roundX] = 0;
 			map[roundY+1][roundX+1] = 0;
@@ -578,7 +619,7 @@ void coin_detection(characters* ch, bool have_coin[9]){
 			map1[roundY][roundX+map_move] = 0;
 			map1[roundY+1][roundX+1+map_move] = 0;
 			coins++;
-		}
+		}*/
 
 		if(coins >= 10){
 			lives++;
@@ -770,6 +811,9 @@ void battle_city() {
 	chhar_spawn(&mario);
 	//chhar_spawn(&enemie1);
 	//chhar_spawn(&enemie2);
+
+
+	//map[enemie2 -> x][enemie2 ->y] = '5';
 	//chhar_spawn(&enemie3);
 	//chhar_spawn(&enemie4);
 	if(lives == 0)
@@ -802,6 +846,7 @@ void battle_city() {
 		}else{
 			mario.type = IMG_16x16_mario;
 			chhar_spawn(&mario);
+
 		}
 
 		/*if(d = DIR_STILL){
