@@ -515,6 +515,8 @@ static void map_reset(unsigned char * map) {
 
 }
 
+
+
 void enemy_detection(characters* ch){
 	u8 roundX = ch->x >> 4;
 	u8 roundY = ch->y >> 4;
@@ -667,6 +669,32 @@ void obstacle_detection( characters* ch, bool have_obstacle[9],bool have_coin[9]
 
 
 }
+static bool_t enemie_move(characters* ch){
+	int dir = 0;
+	u8 roundX = ch->x >> 4;
+	u8 roundY = ch->y >> 4;
+
+	switch (dir) {
+	case 0:
+		if(map[roundX][roundY] == 0){
+					ch->x--;
+					dir = 1;
+				}
+		break;
+	case 1:
+		if(ch->x++ == 0){
+			ch->x++;
+			dir = 0;
+		}
+		break;
+	}
+
+	Xil_Out32(
+				XPAR_BATTLE_CITY_PERIPH_0_BASEADDR + 4 * ( REGS_BASE_ADDRESS + ch->reg_h ),
+				(ch->y << 16) | ch->x);
+
+	return b_false;
+}
 
 static bool_t character_move(characters* ch, direction_t dir, bool up_pressed) {
 
@@ -810,7 +838,7 @@ void battle_city() {
 
 	chhar_spawn(&mario);
 	//chhar_spawn(&enemie1);
-	//chhar_spawn(&enemie2);
+	chhar_spawn(&enemie2);
 
 
 	//map[enemie2 -> x][enemie2 ->y] = '5';
@@ -818,7 +846,6 @@ void battle_city() {
 	//chhar_spawn(&enemie4);
 	if(lives == 0)
 		lives = 3;
-
 
 
 	while (1) {
@@ -856,8 +883,11 @@ void battle_city() {
 		bool up_pressed = BTN_UP(buttons);
 
 		character_move(&mario, d, up_pressed);
+		enemie_move(&enemie2);
+
 
 		map_update(&mario);
+
 
 		for (i = 0; i < 55000; i++) {
 		}
