@@ -106,6 +106,7 @@ int nivo = 0;
 int start_fall = 0;
 int jump_cnt = 0;
 int char_move_cnt = 0;
+int e_dir = 0;
 
 typedef enum {
 	b_false, b_true
@@ -157,8 +158,8 @@ characters enemie1 = {
 
 characters enemie2 = {
 		450,							// x
-		431,							// y
-		DIR_LEFT,              			// dir
+		432,							// y
+		DIR_RIGHT,              			// dir
 		IMG_16x16_enemi1,  				// type
 
 		b_false,                		// destroyed
@@ -224,6 +225,7 @@ void hard_reset(characters *ch){
 	ch->x = 20;
 
 
+
 	/*for(int i = 0; i < 30; i++){ vratiti pocetnu mapu na hard reset
 		for(int j = 0; j <= 40; j++){
 			map[i][j] = map_static[i][j];
@@ -240,7 +242,7 @@ static void map_update(characters * mario) {
 			for(i = 0; i < 30; i++){
 				for(j = 0; j <= 40; j++){
 					map[i][j] = lose_screen[i][j];
-				}
+									}
 			}
 		}
 
@@ -556,6 +558,8 @@ void enemy_detection(characters* ch){
 		map_reset(map1);
 		map_update(ch);
 		chhar_spawn(ch);
+		chhar_spawn(&enemie2);
+
 	}
 
 }
@@ -665,28 +669,67 @@ void obstacle_detection( characters* ch, bool have_obstacle[9],bool have_coin[9]
 		have_obstacle[P_DL] = true;
 	}
 
-
-
-
 }
-static bool_t enemie_move(characters* ch){
-	int dir = 0;
+
+void obstacle_detection_enemie( characters* ch, bool have_obstacle[9]) {
+	for(int i=0;i<9;i++){
+		have_obstacle[i]=false;
+	}
+
 	u8 roundX = ch->x >> 4;
 	u8 roundY = ch->y >> 4;
 
-	switch (dir) {
-	case 0:
-		if(map[roundX][roundY] == 0){
-					ch->x--;
-					dir = 1;
-				}
-		break;
-	case 1:
-		if(ch->x++ == 0){
-			ch->x++;
-			dir = 0;
-		}
-		break;
+
+	if (map[roundY][roundX] != 0) {/////
+		have_obstacle[P_L] = true;
+	}
+	if (map[roundY][roundX+1] != 0) {/////
+		have_obstacle[P_R] = true;
+	}
+	if (map[roundY-1][roundX]){/////
+		have_obstacle[P_U] = true;
+	}
+	if (map[roundY+1][roundX] != 0){/////
+		have_obstacle[P_D] = true;
+	}
+	if (map[roundY-1][roundX+1]) {
+		have_obstacle[P_UR] = true;
+	}
+	if (map[roundY-1][roundX-1] != 0){
+		have_obstacle[P_UL] = true;
+	}
+	if (map[roundY+1][roundX+1] != 0) {/////
+		have_obstacle[P_DR] = true;
+	}
+	if (map[roundY+1][roundX-1] != 0) {//////
+		have_obstacle[P_DL] = true;
+	}
+
+}
+static bool_t enemie_move(characters* ch){
+	u8 roundX = ch->x >> 4;
+	u8 roundY = ch->y >> 4;
+	static bool have_obstacle[9];
+
+
+	obstacle_detection_enemie(ch, &have_obstacle);
+
+
+	switch (e_dir) {
+		case 0:
+			if(!have_obstacle[P_L]){
+				ch->x--;
+			}else{e_dir = 1;}
+
+			break;
+
+		case 1:
+			if(!have_obstacle[P_R]){
+				ch->x++;
+			}else{e_dir = 0;}
+
+			break;
+
 	}
 
 	Xil_Out32(
@@ -857,6 +900,7 @@ void battle_city() {
 		buttons = XIo_In32( XPAR_IO_PERIPH_BASEADDR );
 
 		direction_t d = DIR_STILL;
+		direction_t e1 = DIR_RIGHT;
 
 		if (BTN_LEFT(buttons)) {
 			d = DIR_LEFT;
