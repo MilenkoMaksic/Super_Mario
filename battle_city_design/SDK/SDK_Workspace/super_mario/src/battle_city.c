@@ -535,6 +535,7 @@ void enemy_detection(characters* ch){
 		score += 10;
 		map[roundY+1][roundX] = 0;
 		map1[roundY+1][roundX+map_move] = 0;
+
 	}
 
 	if (map[roundY+1][roundX+1] == 4)
@@ -561,6 +562,34 @@ void enemy_detection(characters* ch){
 		chhar_spawn(&enemie2);
 
 	}
+
+}
+void enemie(characters* ch1,characters* ch2){
+	u8 roundX = ch1->x >> 4;
+		u8 roundY = ch1->y >> 4;
+		u8 roundX1 = ch2->x >> 4;
+				u8 roundY1 = ch2->y >> 4;
+
+
+
+		if(roundX == roundX1 && roundY+1 == roundY1){
+				ch2->destroyed = b_true;
+		}else if(roundX-1 == roundX1 && roundY+1 == roundY1){
+				ch2->destroyed = b_true;
+		}else if(roundX+1 == roundX1 && roundY+1 == roundY1){
+				ch2->destroyed = b_true;
+		}else if (ch1->x == ch2->x && ch1->y == ch2->y)
+		{
+					lives--;
+					hard_reset(ch1);
+					map_reset(map1);
+					map_update(ch1);
+					chhar_spawn(ch1);
+					chhar_spawn(ch2);
+					ch2 ->destroyed = b_false;
+
+		}
+
 
 }
 
@@ -706,26 +735,26 @@ void obstacle_detection_enemie( characters* ch, bool have_obstacle[9]) {
 	}
 
 }
-static bool_t enemie_move(characters* ch){
-	u8 roundX = ch->x >> 4;
-	u8 roundY = ch->y >> 4;
+static bool_t enemie_move(characters* ch1, characters* ch2){
+	u8 roundX = ch2->x >> 4;
+	u8 roundY = ch2->y >> 4;
 	static bool have_obstacle[9];
 
 
-	obstacle_detection_enemie(ch, &have_obstacle);
-
+	obstacle_detection_enemie(ch2, &have_obstacle);
+	enemie(ch1,ch2);
 
 	switch (e_dir) {
 		case 0:
 			if(!have_obstacle[P_L]){
-				ch->x--;
+				ch2->x--;
 			}else{e_dir = 1;}
 
 			break;
 
 		case 1:
 			if(!have_obstacle[P_R]){
-				ch->x++;
+				ch2->x++;
 			}else{e_dir = 0;}
 
 			break;
@@ -733,8 +762,15 @@ static bool_t enemie_move(characters* ch){
 	}
 
 	Xil_Out32(
-				XPAR_BATTLE_CITY_PERIPH_0_BASEADDR + 4 * ( REGS_BASE_ADDRESS + ch->reg_h ),
-				(ch->y << 16) | ch->x);
+				XPAR_BATTLE_CITY_PERIPH_0_BASEADDR + 4 * ( REGS_BASE_ADDRESS + ch2->reg_h ),
+				(ch2->y << 16) | ch2->x);
+	if(ch2->destroyed == b_true){
+		Xil_Out32(
+						XPAR_BATTLE_CITY_PERIPH_0_BASEADDR + 4 * ( REGS_BASE_ADDRESS + ch2->reg_h ),
+						(ch2->y << 0) | ch2->x);
+		ch2 -> x = 0;
+		ch2 -> y = 0;
+	}
 
 	return b_false;
 }
@@ -927,7 +963,7 @@ void battle_city() {
 		bool up_pressed = BTN_UP(buttons);
 
 		character_move(&mario, d, up_pressed);
-		enemie_move(&enemie2);
+		enemie_move(&mario,&enemie2);
 
 
 		map_update(&mario);
