@@ -129,23 +129,27 @@ typedef struct {
 
 	unsigned int reg_l;
 	unsigned int reg_h;
+	bool_t spawn;
 } characters;
 
 characters mario = {
 		40,	                        	// x
 		369,		                    // y
+
 		DIR_RIGHT,              		// dir
 		IMG_16x16_mario,  				// type
 
 		b_false,                		// destroyed
 
 		TANK1_REG_L,            		// reg_l
-		TANK1_REG_H             		// reg_h
+		TANK1_REG_H,            		// reg_h
+		b_true                          //spawn
 		};
 
 characters enemie1 = {
-		330,						// x
-		431,                        // y
+		450,							// x
+		432,                        	// y
+
 
 		DIR_LEFT,              			// dir
 		IMG_16x16_enemi1,  				// type
@@ -153,23 +157,26 @@ characters enemie1 = {
 		b_false,                		// destroyed
 
 		TANK_AI_REG_L,            		// reg_l
-		TANK_AI_REG_H             		// reg_h
+		TANK_AI_REG_H,            		// reg_h
+		b_true                          //spawn
 		};
 
 characters enemie2 = {
-		450,							// x
+		330,							// x
 		432,							// y
+
 		DIR_RIGHT,              			// dir
 		IMG_16x16_enemi1,  				// type
 
 		b_false,                		// destroyed
 
 		TANK_AI_REG_L2,            		// reg_l
-		TANK_AI_REG_H2             		// reg_h
+		TANK_AI_REG_H2,            		// reg_h
+		b_true                          //spawn
 		};
 
 characters enemie3 = {
-		330,							// x
+		329,							// x
 		272,							// y
 		DIR_LEFT,              			// dir
 		IMG_16x16_enemi1,  				// type
@@ -177,19 +184,21 @@ characters enemie3 = {
 		b_false,                		// destroyed
 
 		TANK_AI_REG_L3,            		// reg_l
-		TANK_AI_REG_H3             		// reg_h
+		TANK_AI_REG_H3,             	// reg_h
+		b_true                          //spawn
 		};
 
 characters enemie4 = {
-		635,							// x
-		431,							// y
+		400,							// x
+		432,							// y
 		DIR_LEFT,              			// dir
 		IMG_16x16_enemi1,  				// type
 
 		b_false,                		// destroyed
 
 		TANK_AI_REG_L4,            		// reg_l
-		TANK_AI_REG_H4             		// reg_h
+		TANK_AI_REG_H4,            		// reg_h
+		b_true                          //spawn
 		};
 
 unsigned int rand_lfsr113(void) {
@@ -232,6 +241,24 @@ void hard_reset(characters *ch){
 		}
 	}*/
 }
+void enemie_spawn(characters* ch){
+
+	Xil_Out32(
+			XPAR_BATTLE_CITY_PERIPH_0_BASEADDR + 4 * ( REGS_BASE_ADDRESS + ch->reg_h ),
+			(ch->y << 16) | ch->x);
+	ch->spawn = b_true;
+
+
+}
+void enemie_despawn(characters* ch){
+
+	Xil_Out32(
+			XPAR_BATTLE_CITY_PERIPH_0_BASEADDR + 4 * ( REGS_BASE_ADDRESS + ch->reg_h ),
+			(ch->y << 0) | ch->x);
+	ch->spawn = b_false;
+
+
+}
 static void map_update(characters * mario) {
 	int x, y;
 	long int addr;
@@ -239,10 +266,12 @@ static void map_update(characters * mario) {
 
 
 	if(lives == 0){
+
 			for(i = 0; i < 30; i++){
 				for(j = 0; j <= 40; j++){
 					map[i][j] = lose_screen[i][j];
-									}
+
+				}
 			}
 		}
 
@@ -270,6 +299,7 @@ static void map_update(characters * mario) {
 				map[i][j] = map1[i][j+map_move];
 			}
 		}
+
 	}
 
 
@@ -282,6 +312,7 @@ static void map_update(characters * mario) {
 				map[i][j] = map1[i][j+map_move];
 			}
 		}
+		destroy_enemie(&enemie1);
 	}
 
 
@@ -294,6 +325,7 @@ static void map_update(characters * mario) {
 				map[i][j] = map1[i][j+map_move];
 			}
 		}
+
 	}
 	if (mario-> x >= 620 && nivo == 2){
 		nivo = 3;
@@ -305,6 +337,8 @@ static void map_update(characters * mario) {
 				map[i][j] = map1[i][j+map_move];
 			}
 		}
+		destroy_enemie(&enemie2);
+
 	}
 	if (mario-> x <= 0 && nivo == 3){
 			nivo = 2;
@@ -327,6 +361,7 @@ static void map_update(characters * mario) {
 					map[i][j] = map1[i][j+map_move];
 				}
 			}
+			destroy_enemie(&enemie3);
 		}
 	if (mario-> x <= 0 && nivo == 4){
 		nivo = 3;
@@ -348,6 +383,7 @@ static void map_update(characters * mario) {
 						map[i][j] = map_win[i][j];
 					}
 				}
+				destroy_enemie(&enemie4);
 			}
 
 
@@ -559,16 +595,16 @@ void enemy_detection(characters* ch){
 		map_reset(map1);
 		map_update(ch);
 		chhar_spawn(ch);
-		chhar_spawn(&enemie2);
+
 
 	}
 
 }
 void enemie(characters* ch1,characters* ch2){
 	u8 roundX = ch1->x >> 4;
-		u8 roundY = ch1->y >> 4;
-		u8 roundX1 = ch2->x >> 4;
-				u8 roundY1 = ch2->y >> 4;
+	u8 roundY = ch1->y >> 4;
+	u8 roundX1 = ch2->x >> 4;
+	u8 roundY1 = ch2->y >> 4;
 
 
 
@@ -578,14 +614,13 @@ void enemie(characters* ch1,characters* ch2){
 				ch2->destroyed = b_true;
 		}else if(roundX+1 == roundX1 && roundY+1 == roundY1){
 				ch2->destroyed = b_true;
-		}else if (ch1->x == ch2->x && ch1->y == ch2->y)
+		}else if (ch1->x == ch2->x && ch1->y == ch2->y && ch2->spawn == b_true)
 		{
 					lives--;
 					hard_reset(ch1);
 					map_reset(map1);
 					map_update(ch1);
 					chhar_spawn(ch1);
-					chhar_spawn(ch2);
 					ch2 ->destroyed = b_false;
 
 		}
@@ -740,41 +775,46 @@ static bool_t enemie_move(characters* ch1, characters* ch2){
 	u8 roundY = ch2->y >> 4;
 	static bool have_obstacle[9];
 
-
 	obstacle_detection_enemie(ch2, &have_obstacle);
 	enemie(ch1,ch2);
 
-	switch (e_dir) {
-		case 0:
+	switch (ch2->dir) {
+		case DIR_LEFT:
 			if(!have_obstacle[P_L]){
 				ch2->x--;
-			}else{e_dir = 1;}
+				if(!have_obstacle[P_DL]){
+					ch2->dir = DIR_RIGHT;
+				}
+			}else{ch2->dir = DIR_RIGHT;}
 
 			break;
 
-		case 1:
+		case DIR_RIGHT:
 			if(!have_obstacle[P_R]){
 				ch2->x++;
-			}else{e_dir = 0;}
+				if(!have_obstacle[P_DR]){
+					ch2->dir = DIR_LEFT;
+				}
+			}else{ch2->dir = DIR_LEFT;}
 
 			break;
 
 	}
 
-	Xil_Out32(
-				XPAR_BATTLE_CITY_PERIPH_0_BASEADDR + 4 * ( REGS_BASE_ADDRESS + ch2->reg_h ),
-				(ch2->y << 16) | ch2->x);
+
+	enemie_spawn(ch2);
 	if(ch2->destroyed == b_true){
-		Xil_Out32(
-						XPAR_BATTLE_CITY_PERIPH_0_BASEADDR + 4 * ( REGS_BASE_ADDRESS + ch2->reg_h ),
-						(ch2->y << 0) | ch2->x);
-		ch2 -> x = 0;
-		ch2 -> y = 0;
+
+		destroy_enemie(ch2);
 	}
 
 	return b_false;
 }
-
+void destroy_enemie(characters* ch){
+	enemie_despawn(ch);
+	ch->x = 0;
+	ch->y = 0;
+}
 static bool_t character_move(characters* ch, direction_t dir, bool up_pressed) {
 
 	static jump_fsm_t jump_fsm = J_IDLE;
@@ -904,11 +944,7 @@ void battle_city() {
 	unsigned int buttons; /*, tmpBtn = 0, tmpUp = 0;*/
 	int i;/*, change = 0, jumpFlag = 0;*/
 	/*int block;*/
-	/*for(int i = 0; i < 30; i++){  napraviti pocetnu mapu
-		for(int j = 0; j <= 160; j++){
-			map_static[i][j] = map1[i][j];
-		}
-	}*/
+
 
 	map_reset(map1);
 	map_update(&mario);
@@ -917,10 +953,7 @@ void battle_city() {
 
 	chhar_spawn(&mario);
 	//chhar_spawn(&enemie1);
-	chhar_spawn(&enemie2);
-
-
-	//map[enemie2 -> x][enemie2 ->y] = '5';
+	//chhar_spawn(&enemie2);
 	//chhar_spawn(&enemie3);
 	//chhar_spawn(&enemie4);
 	if(lives == 0)
@@ -963,10 +996,29 @@ void battle_city() {
 		bool up_pressed = BTN_UP(buttons);
 
 		character_move(&mario, d, up_pressed);
-		enemie_move(&mario,&enemie2);
+
+
+
 
 
 		map_update(&mario);
+
+		if (nivo == 1){
+			chhar_spawn(&enemie1);
+			enemie_move(&mario,&enemie1);
+		}
+		if (nivo == 2){
+			chhar_spawn(&enemie2);
+			enemie_move(&mario,&enemie2);
+		}
+		if (nivo == 3){
+			chhar_spawn(&enemie3);
+			enemie_move(&mario,&enemie3);
+		}
+		if (nivo == 4){
+			chhar_spawn(&enemie4);
+			enemie_move(&mario,&enemie4);
+		}
 
 
 		for (i = 0; i < 55000; i++) {
