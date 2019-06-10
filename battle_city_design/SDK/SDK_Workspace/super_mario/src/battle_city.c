@@ -33,24 +33,24 @@
 #define IMG_16x16_8			0x02FF
 #define IMG_16x16_9			0x033F
 #define IMG_16x16_A			0x037F
-#define IMG_16x16_Black			0x03BF
-#define IMG_16x16_cigle			0x03FF
-#define IMG_16x16_coin			0x043F
-#define IMG_16x16_crno			0x047F
+#define IMG_16x16_Black		0x03BF
+#define IMG_16x16_cigle		0x03FF
+#define IMG_16x16_coin		0x043F
+#define IMG_16x16_crno		0x047F
 #define IMG_16x16_D			0x04BF
 #define IMG_16x16_E			0x04FF
-#define IMG_16x16_enemi1			0x053F
+#define IMG_16x16_enemi1	0x053F
 #define IMG_16x16_I			0x057F
 #define IMG_16x16_L			0x05BF
 #define IMG_16x16_M			0x05FF
-#define IMG_16x16_mario			0x063F
-#define IMG_16x16_mario_left			0x067F
+#define IMG_16x16_mario		0x063F
+#define IMG_16x16_mario_left 0x067F
 #define IMG_16x16_O			0x06BF
-#define IMG_16x16_plavacigla			0x06FF
+#define IMG_16x16_plavacigla 0x06FF
 #define IMG_16x16_R			0x073F
 #define IMG_16x16_W			0x077F
-#define IMG_16x16_walken			0x07BF
-#define IMG_16x16_walken_back			0x07FF
+#define IMG_16x16_walken	0x07BF
+#define IMG_16x16_walken_back	0x07FF
 #define IMG_16x16_White			0x083F
 
 
@@ -165,7 +165,7 @@ characters enemie2 = {
 		330,							// x
 		432,							// y
 
-		DIR_RIGHT,              			// dir
+		DIR_RIGHT,             			// dir
 		IMG_16x16_enemi1,  				// type
 
 		b_false,                		// destroyed
@@ -234,12 +234,6 @@ void hard_reset(characters *ch){
 	ch->x = 20;
 
 
-
-	/*for(int i = 0; i < 30; i++){ vratiti pocetnu mapu na hard reset
-		for(int j = 0; j <= 40; j++){
-			map[i][j] = map_static[i][j];
-		}
-	}*/
 }
 void enemie_spawn(characters* ch){
 
@@ -559,13 +553,6 @@ void enemy_detection(characters* ch){
 	u8 roundX = ch->x >> 4;
 	u8 roundY = ch->y >> 4;
 
-	/*if (map[roundY+1][roundX] == 4 || map[roundY+1][roundX+1] == 4 || map[roundY+1][roundX-1] == 4  ) {	//Ako je neprijatelj ispod nas, ubijamo ga
-			score += 10;
-			map[roundY+1][roundX] = 0;
-			map[roundY+1][roundX+1] = 0;
-			map1[roundY+1][roundX+map_move] = 0;
-			map1[roundY+1][roundX+map_move] = 0;
-		}*/
 	if (map[roundY+1][roundX] == 4)
 	{
 		score += 10;
@@ -589,7 +576,7 @@ void enemy_detection(characters* ch){
 		}
 
 	if (map[roundY][roundX] == 4 ||  map[roundY][roundX+1] == 4 || map[roundY][roundX-1] == 4) {
-	//centar, iznad, iznad levo, iznad desno, levo, desno = smrt
+	//(centar, levo, desno) = smrt
 		lives--;
 		hard_reset(ch);
 		map_reset(map1);
@@ -600,7 +587,7 @@ void enemy_detection(characters* ch){
 	}
 
 }
-void enemie(characters* ch1,characters* ch2){
+void enemie_kill(characters* ch1,characters* ch2){
 	u8 roundX = ch1->x >> 4;
 	u8 roundY = ch1->y >> 4;
 	u8 roundX1 = ch2->x >> 4;
@@ -610,10 +597,13 @@ void enemie(characters* ch1,characters* ch2){
 
 		if(roundX == roundX1 && roundY+1 == roundY1){
 				ch2->destroyed = b_true;
+				//coins++;
 		}else if(roundX-1 == roundX1 && roundY+1 == roundY1){
 				ch2->destroyed = b_true;
+				//coins++;
 		}else if(roundX+1 == roundX1 && roundY+1 == roundY1){
 				ch2->destroyed = b_true;
+				//coins++;
 		}else if (ch1->x == ch2->x && ch1->y == ch2->y && ch2->spawn == b_true)
 		{
 					lives--;
@@ -651,7 +641,6 @@ void coin_detection(characters* ch, bool have_coin[9]){
 
 		if (map[roundY+1][roundX] == 5)
 				{
-					//have_coin[P_R] = true;
 					map[roundY+1][roundX] = 0;
 					map1[roundY+1][roundX+map_move] = 0;
 					coins++;
@@ -659,37 +648,10 @@ void coin_detection(characters* ch, bool have_coin[9]){
 
 		if (map[roundY+1][roundX+1] == 5)
 						{
-							//have_coin[P_R] = true;
 							map[roundY+1][roundX+1] = 0;
 							map1[roundY+1][roundX+1+map_move] = 0;
 							coins++;
 						}
-
-
-		/*if (map[roundY+1][roundX] == 5 || map[roundY+1][roundX+1] == 5){/////
-			have_coin[P_D] = true;
-			map[roundY+1][roundX] = 0;
-			map[roundY+1][roundX+1] = 0;
-			map1[roundY+1][roundX+map_move] = 0;
-			map1[roundY+1][roundX+1+map_move] = 0;
-			coins++;
-		}
-		if (map[roundY+1][roundX] == 5 || map[roundY+1][roundX+1] == 5) {/////
-			have_coin[P_DR] = true;
-			map[roundY][roundX] = 0;
-			map[roundY+1][roundX] = 0;
-			map1[roundY][roundX+map_move] = 0;
-			map1[roundY+1][roundX+map_move] = 0;
-			coins++;
-		}
-		if (map[roundY+1][roundX] == 5 || map[roundY+1][roundX+1] == 5) {//////
-			have_coin[P_DL] = true;
-			map[roundY][roundX] = 0;
-			map[roundY+1][roundX+1] = 0;
-			map1[roundY][roundX+map_move] = 0;
-			map1[roundY+1][roundX+1+map_move] = 0;
-			coins++;
-		}*/
 
 		if(coins >= 10){
 			lives++;
@@ -776,7 +738,7 @@ static bool_t enemie_move(characters* ch1, characters* ch2){
 	static bool have_obstacle[9];
 
 	obstacle_detection_enemie(ch2, &have_obstacle);
-	enemie(ch1,ch2);
+	enemie_kill(ch1,ch2);
 
 	switch (ch2->dir) {
 		case DIR_LEFT:
@@ -941,21 +903,16 @@ static bool_t character_move(characters* ch, direction_t dir, bool up_pressed) {
 void battle_city() {
 
 
-	unsigned int buttons; /*, tmpBtn = 0, tmpUp = 0;*/
-	int i;/*, change = 0, jumpFlag = 0;*/
-	/*int block;*/
+	unsigned int buttons;
+	int i;
+
 
 
 	map_reset(map1);
 	map_update(&mario);
 
-		//OVO PITAMO SUBOTICA DA LI RADI!!
 
 	chhar_spawn(&mario);
-	//chhar_spawn(&enemie1);
-	//chhar_spawn(&enemie2);
-	//chhar_spawn(&enemie3);
-	//chhar_spawn(&enemie4);
 	if(lives == 0)
 		lives = 3;
 
@@ -989,10 +946,6 @@ void battle_city() {
 
 		}
 
-		/*if(d = DIR_STILL){
-			mario.type = IMG_16x16_mario;
-			chhar_spawn(&mario);
-		}*/
 		bool up_pressed = BTN_UP(buttons);
 
 		character_move(&mario, d, up_pressed);
@@ -1021,7 +974,7 @@ void battle_city() {
 		}
 
 
-		for (i = 0; i < 55000; i++) {
+		for (i = 0; i < 50000; i++) {
 		}
 
 	}
